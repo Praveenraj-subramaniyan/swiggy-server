@@ -9,8 +9,8 @@ router.post('/', async(req, res) => {
     try {
         const { emailIdLogin, passwordLogin } = await req.body;
         var connection= await client.connect();
-        var db =  connection.db("FoodAppReact");
-        var loginCredentials = await db.collection("UserRegistration").findOne({email:emailIdLogin});
+        var db =  connection.db(process.env.DB_name);
+        var loginCredentials = await db.collection(process.env.Table_name).findOne({email:emailIdLogin});
         if(loginCredentials == null){
           res.status(200).send("Invalid");
         }
