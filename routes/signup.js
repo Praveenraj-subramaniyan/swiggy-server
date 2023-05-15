@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 var router = express.Router();
 var { MongoClient, ObjectId } = require("mongodb");
 const dotenv = require("dotenv");
@@ -9,19 +9,22 @@ var client = new MongoClient(
 
 router.post("/", async (req, res) => {
   try {
-    const { nameSignup, emailIdSignup, passwordSignup, confirmpasswordSignup } =await req.body;
+    const { nameSignup, emailIdSignup, passwordSignup, confirmpasswordSignup } =
+      await req.body;
     var connection = await client.connect();
     var db = connection.db(process.env.DB_name);
-    var registerCredentials = await db.collection(process.env.Table_name).findOne({ email: emailIdSignup });
+    var registerCredentials = await db
+      .collection(process.env.Table_name)
+      .findOne({ email: emailIdSignup });
     console.log(registerCredentials);
     if (registerCredentials == null) {
       res.status(200).send("True");
       try {
-        const result = await db .collection(process.env.Table_name).insertOne({
-            email: emailIdSignup,
-            password: passwordSignup,
-            name: nameSignup,
-          });
+        const result = await db.collection(process.env.Table_name).insertOne({
+          email: emailIdSignup,
+          password: passwordSignup,
+          name: nameSignup,
+        });
       } catch (error) {
         console.log("mongo" + error);
         res.status(200).send("Error");
