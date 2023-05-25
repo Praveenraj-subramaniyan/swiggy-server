@@ -24,6 +24,8 @@ router.post("/", async (req, res) => {
           email: emailIdSignup,
           password: passwordSignup,
           name: nameSignup,
+          cart:"",
+          order:"",
         });
       } catch (error) {
         console.log("mongo" + error);

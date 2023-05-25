@@ -1,20 +1,13 @@
-const express = require("express");
+var express = require('express');
 var router = express.Router();
-var { MongoClient, ObjectId } = require("mongodb");
-const dotenv = require("dotenv");
-dotenv.config();
-var client = new MongoClient(
-  `mongodb+srv://${process.env.MongoDb}@cluster0.dfyktwl.mongodb.net/?retryWrites=true&w=majority`
-);
+const { CheckUser} = require('./DBConnection');
 
 router.post("/", async (req, res) => {
   try {
-    const { emailIdLogin, passwordLogin } = await req.body;
-    var connection = await client.connect();
-    var db = connection.db(process.env.DB_name);
-    var loginCredentials = await db
-      .collection(process.env.Table_name)
-      .findOne({ email: emailIdLogin });
+    const { emailIdLogin, passwordLogin } =await req.body;
+    var loginCredentials = await CheckUser(emailIdLogin);
+    console.log(loginCredentials)
+    console.log(passwordLogin)
     if (loginCredentials == null) {
       res.status(200).send("Invalid");
     } else {
@@ -24,7 +17,6 @@ router.post("/", async (req, res) => {
         res.status(200).send("False");
       }
     }
-    await connection.close();
   } catch (error) {
     console.log(error);
     res.status(500).send(error);
