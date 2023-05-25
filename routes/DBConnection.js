@@ -38,4 +38,28 @@ async function DetailsPage(id) {
   return loginCredentials;
 }
 
-module.exports = {CheckUser, HomePage,DetailsPage};
+async function CheckSignUpUser(emailIdLogin) {
+    var connection = await client.connect();
+    var db = connection.db(process.env.DB_name);
+    var registerCredentials = await db
+      .collection(process.env.UserRegistration_table)
+      .findOne({ email: emailIdLogin });
+    await connection.close();
+    return registerCredentials;
+  }  
+
+  async function InsertSignUpUser(nameSignup,emailIdSignup,passwordSignup) {
+    var connection = await client.connect();
+    var db = connection.db(process.env.DB_name);
+    await db.collection(process.env.UserRegistration_table).insertOne({
+        email: emailIdSignup,
+        password: passwordSignup,
+        name: nameSignup,
+        cart:"",
+        order:"",
+      });
+    await connection.close();
+    return registerCredentials;
+  }  
+
+module.exports = {CheckUser, HomePage,DetailsPage,CheckSignUpUser,InsertSignUpUser};

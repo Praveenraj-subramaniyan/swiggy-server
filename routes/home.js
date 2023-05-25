@@ -1,12 +1,7 @@
 const express = require("express");
 var router = express.Router();
 const { CheckUser, HomePage,DetailsPage} = require('./DBConnection');
-var { MongoClient, ObjectId } = require("mongodb");
-const dotenv = require("dotenv");
-dotenv.config();
-var client = new MongoClient(
-  `mongodb+srv://${process.env.MongoDb}@cluster0.dfyktwl.mongodb.net/?retryWrites=true&w=majority`
-);
+
 
 router.post("/", async function (req, res) {
   try {
