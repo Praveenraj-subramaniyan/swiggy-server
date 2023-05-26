@@ -6,8 +6,6 @@ router.post("/", async (req, res) => {
   try {
     const { emailIdLogin, passwordLogin } =await req.body;
     var loginCredentials = await CheckUser(emailIdLogin);
-    console.log(loginCredentials)
-    console.log(passwordLogin)
     if (loginCredentials == null) {
       res.status(200).send("Invalid");
     } else {

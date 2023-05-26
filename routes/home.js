@@ -1,7 +1,7 @@
 const express = require("express");
 var router = express.Router();
 const { CheckUser, HomePage,DetailsPage} = require('./DBConnection');
-
+const { CheckCart} = require('./cart');
 
 router.post("/", async function (req, res) {
   try {
@@ -9,13 +9,13 @@ router.post("/", async function (req, res) {
     const passwordLogin = req.body.passwordLogin;
     var loginCredentials = await CheckUser(emailIdLogin);
     if (loginCredentials == null) {
-      res.status(200).send("");
+      res.status(200).send(null);
     } else {
       if (loginCredentials.password == passwordLogin) {
         var restaurantList = await HomePage();
-        res.json(restaurantList);
+        res.json(CheckCart(restaurantList,loginCredentials));
       } else {
-        res.status(200).send("");
+        res.status(200).send(null);
       }
     }
   } catch (error) {
@@ -28,15 +28,17 @@ router.post("/:id", async function (req, res) {
     const passwordLogin = req.body.passwordLogin;
     var loginCredentials = await CheckUser(emailIdLogin);
     if (loginCredentials == null) {
-      res.status(200).send("");
+      res.status(200).send(null);
     } else {
       if (loginCredentials.password == passwordLogin) {
-        var foodItems = await DetailsPage( new ObjectId(req.params.id))
+        console.log(req.params.id)
+        //const id =new ObjectId(req.params.id);
+        const foodItems = await DetailsPage(req.params.id)
+        res.json(foodItems);
       } else {
-        res.status(200).send("");
+        res.status(200).send(null);
       }
     }
-    res.json(foodItems);
     await connection.close();
   } catch (error) {
     console.log(error);

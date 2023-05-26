@@ -8,18 +8,13 @@ var client = new MongoClient(
 );
 
 async function CheckUser(emailIdLogin) {
-  try {
-    var connection = await client.connect();
+  var connection = await client.connect();
   var db = connection.db(process.env.DB_name);
   var loginCredentials = await db
     .collection(process.env.UserRegistration_table)
     .findOne({ email: emailIdLogin });
   await connection.close();
   return loginCredentials;
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
 }
 
 async function HomePage() {
@@ -36,25 +31,25 @@ async function HomePage() {
 async function DetailsPage(id) {
   var connection = await client.connect();
   var db = connection.db(process.env.DB_name);
-  var loginCredentials = await db
+  const detailList = await db
     .collection(process.env.FoodAppReact_table)
-    .findOne({ _id:id });
+    .findOne({ _id: new ObjectId(id) });
   await connection.close();
-  return loginCredentials;
+  return detailList;
 }
 
-  async function InsertSignUpUser(nameSignup,emailIdSignup,passwordSignup) {
-    var connection = await client.connect();
-    var db = connection.db(process.env.DB_name);
-    await db.collection(process.env.UserRegistration_table).insertOne({
-        email: emailIdSignup,
-        password: passwordSignup,
-        name: nameSignup,
-        cart:"",
-        order:"",
-      });
-    await connection.close();
-    return registerCredentials;
-  }  
+async function InsertSignUpUser(nameSignup, emailIdSignup, passwordSignup) {
+  var connection = await client.connect();
+  var db = connection.db(process.env.DB_name);
+  await db.collection(process.env.UserRegistration_table).insertOne({
+    email: emailIdSignup,
+    password: passwordSignup,
+    name: nameSignup,
+    cart: "",
+    order: "",
+  });
+  await connection.close();
+  return registerCredentials;
+}
 
-module.exports = {CheckUser, HomePage,DetailsPage,InsertSignUpUser};
+module.exports = { CheckUser, HomePage, DetailsPage, InsertSignUpUser };
