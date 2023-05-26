@@ -52,4 +52,18 @@ async function InsertSignUpUser(nameSignup, emailIdSignup, passwordSignup) {
   return registerCredentials;
 }
 
-module.exports = { CheckUser, HomePage, DetailsPage, InsertSignUpUser };
+async function AddCart(nameSignup, emailIdSignup, passwordSignup) {
+  // var connection = await client.connect();
+  // var db = connection.db(process.env.DB_name);
+  // await db.collection(process.env.UserRegistration_table).insertOne({
+  //   email: emailIdSignup,
+  //   password: passwordSignup,
+  //   name: nameSignup,
+  //   cart: "",
+  //   order: "",
+  // });
+  // await connection.close();
+  console.log("added");
+}
+
+module.exports = { CheckUser, HomePage, DetailsPage, InsertSignUpUser,AddCart };

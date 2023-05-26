@@ -1,7 +1,7 @@
 const express = require("express");
 var router = express.Router();
 const { CheckUser, HomePage,DetailsPage} = require('./DBConnection');
-const { CheckCart} = require('./cart');
+const { CheckCart} = require('./cartdatabase');
 
 router.post("/", async function (req, res) {
   try {
@@ -31,8 +31,6 @@ router.post("/:id", async function (req, res) {
       res.status(200).send(null);
     } else {
       if (loginCredentials.password == passwordLogin) {
-        console.log(req.params.id)
-        //const id =new ObjectId(req.params.id);
         const foodItems = await DetailsPage(req.params.id)
         res.json(foodItems);
       } else {

@@ -1,28 +1,29 @@
 var express = require("express");
 var router = express.Router();
+const { CheckUser,AddCart} = require('./DBConnection');
 
-function CheckCart(restaurantList, loginCredentials) {
-  const cartItems = loginCredentials.cart;
-  const modifiedRestaurantList = restaurantList.map((restaurant) => {
-    if (cartItems.length > 0) {
-      const dishesWithQuantity = restaurant.dishes.map((dish) => {
-        const cartItem = cartItems.find((item) => item.dish_id === dish.dish_id && restaurant._id.toString() === item.res_id);
-        if (cartItem) {
-          return { ...dish, quantity: cartItem.quantity };
-        } else {
-          return { ...dish, quantity: "0" };
-        }
-      });
-      return { ...restaurant, dishes: dishesWithQuantity };
+router.post("/", async (req, res) => {
+  try {
+    const { loginDataFromCookie, cartData } =await req.body;
+    console.log(loginDataFromCookie.passwordLogin)
+    console.log(loginDataFromCookie.emailIdLogin)
+    console.log(cartData)
+    var loginCredentials = await CheckUser(loginDataFromCookie.emailIdLogin);
+    if (loginCredentials == null) {
+      res.status(200).send(null);
     } else {
-      const dishesWithZeroQuantity = restaurant.dishes.map((dish) => {
-        return { ...dish, quantity: "0" };
-      });
-      return { ...restaurant, dishes: dishesWithZeroQuantity };
+      if (loginCredentials.password == loginDataFromCookie.passwordLogin) {
+        AddCart(loginDataFromCookie.emailIdLogin,cartData);
+        res.status(200).send(null);
+      } else {
+        res.status(200).send(null);
+      }
     }
-  });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
+});
 
-  return modifiedRestaurantList;
-}
 
-module.exports = { CheckCart };
+module.exports = router;
