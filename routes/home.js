@@ -1,7 +1,7 @@
 const express = require("express");
 var router = express.Router();
 const { CheckUser, HomePage,DetailsPage} = require('./DBConnection');
-const { CheckCart} = require('./quantity');
+const { CheckCart,CheckCartDetails} = require('./quantity');
 
 router.post("/", async function (req, res) {
   try {
@@ -32,12 +32,11 @@ router.post("/:id", async function (req, res) {
     } else {
       if (loginCredentials.password == passwordLogin) {
         const foodItems = await DetailsPage(req.params.id)
-        res.json(foodItems);
+        res.json(CheckCartDetails(foodItems,loginCredentials));
       } else {
         res.status(200).send(null);
       }
     }
-    await connection.close();
   } catch (error) {
     console.log(error);
   }

@@ -75,15 +75,11 @@ async function AddCart(emailIdLogin, updatedCartData) {
       quantity : quantity,
     });
   }
-  console.log(existingCart)
-  // Update the user's cart data
   await db.collection(process.env.UserRegistration_table).updateOne(
     { email: emailIdLogin },
     { $set: { cart: existingCart } }
   );
-
   await connection.close();
-  console.log("added");
 }
 
 module.exports = { CheckUser, HomePage, DetailsPage, InsertSignUpUser,AddCart };
