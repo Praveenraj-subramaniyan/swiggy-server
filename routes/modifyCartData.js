@@ -36,5 +36,25 @@ function CheckCartDetails(foodItems, loginCredentials) {
   return { ...foodItems, dishes: modifiedRestaurantList }
 }
 
-module.exports = { CheckCart,CheckCartDetails };
+function ViewCart(restaurantList, loginCredentials) {
+  const cartItems = loginCredentials.cart;
+  const modifiedDishes = [];
+  const restaurantList1 = CheckCart(restaurantList,loginCredentials)
+  restaurantList1.forEach((data) => {
+    data.dishes.forEach((dish) => {
+      if (dish.quantity > 0) {
+        const modifiedDish = {
+          ...dish,
+          res_name: data.res_name,
+          res_id: data._id,
+        };
+        modifiedDishes.push(modifiedDish);
+      }
+    });
+  });
+  console.log(modifiedDishes)
+  return modifiedDishes;
+}
+
+module.exports = { CheckCart,CheckCartDetails,ViewCart};
 

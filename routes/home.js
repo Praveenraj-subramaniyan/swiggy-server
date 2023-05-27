@@ -1,7 +1,7 @@
 const express = require("express");
 var router = express.Router();
 const { CheckUser, HomePage,DetailsPage} = require('./DBConnection');
-const { CheckCart,CheckCartDetails} = require('./quantity');
+const { CheckCart,CheckCartDetails} = require('./modifyCartData');
 
 router.post("/", async function (req, res) {
   try {
