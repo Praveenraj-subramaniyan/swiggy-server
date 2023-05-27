@@ -52,17 +52,37 @@ async function InsertSignUpUser(nameSignup, emailIdSignup, passwordSignup) {
   return registerCredentials;
 }
 
-async function AddCart(nameSignup, emailIdSignup, passwordSignup) {
-  // var connection = await client.connect();
-  // var db = connection.db(process.env.DB_name);
-  // await db.collection(process.env.UserRegistration_table).insertOne({
-  //   email: emailIdSignup,
-  //   password: passwordSignup,
-  //   name: nameSignup,
-  //   cart: "",
-  //   order: "",
-  // });
-  // await connection.close();
+async function AddCart(emailIdLogin, updatedCartData) {
+  var connection = await client.connect();
+  var db = connection.db(process.env.DB_name);
+  const existingUser = await db.collection(process.env.UserRegistration_table).findOne({ email: emailIdLogin });
+  const existingCart = existingUser.cart || [];
+  const { res_id, dish_id, quantity } = updatedCartData;
+  let foundMatchingItem = false;
+  for (const existingItem of existingCart) {
+    if (existingItem.dish_id === dish_id && existingItem.res_id === res_id) {
+      existingItem.res_id = res_id;
+      existingItem.dish_id = dish_id;
+      existingItem.quantity = quantity;
+      foundMatchingItem = true;
+      break;
+    }
+  }
+  if (!foundMatchingItem) {
+    existingCart.push({
+      res_id : res_id,
+      dish_id : dish_id,
+      quantity : quantity,
+    });
+  }
+  console.log(existingCart)
+  // Update the user's cart data
+  await db.collection(process.env.UserRegistration_table).updateOne(
+    { email: emailIdLogin },
+    { $set: { cart: existingCart } }
+  );
+
+  await connection.close();
   console.log("added");
 }
 
