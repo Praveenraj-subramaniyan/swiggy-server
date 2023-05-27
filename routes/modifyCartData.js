@@ -8,12 +8,12 @@ function CheckCart(restaurantList, loginCredentials) {
       const dishesWithQuantity = restaurant.dishes.map((dish) => {
         const cartItem = cartItems.find((item) => item.dish_id === dish.dish_id && restaurant._id.toString() === item.res_id);
         const updatedQuantity = cartItem ? cartItem.quantity : "0";
-          return { ...dish, quantity: updatedQuantity };
+          return { ...dish, quantity: updatedQuantity, res_id:restaurant._id, res_name:restaurant.res_name};
       });
       return { ...restaurant, dishes: dishesWithQuantity };
     } else {
       const dishesWithZeroQuantity = restaurant.dishes.map((dish) => {
-        return { ...dish, quantity: "0" };
+        return { ...dish, quantity: "0", res_id:restaurant._id, res_name:restaurant.res_name};
       });
       return { ...restaurant, dishes: dishesWithZeroQuantity };
     }
@@ -44,15 +44,12 @@ function ViewCart(restaurantList, loginCredentials) {
     data.dishes.forEach((dish) => {
       if (dish.quantity > 0) {
         const modifiedDish = {
-          ...dish,
-          res_name: data.res_name,
-          res_id: data._id,
+          ...dish
         };
         modifiedDishes.push(modifiedDish);
       }
     });
   });
-  console.log(modifiedDishes)
   return modifiedDishes;
 }
 
