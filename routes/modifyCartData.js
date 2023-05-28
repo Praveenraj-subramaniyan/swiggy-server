@@ -29,8 +29,8 @@ function CheckCartDetails(foodItems, loginCredentials) {
         (item) =>
           item.dish_id === dish.dish_id && item.res_id === foodItems._id.toString()
       );
-      const quantity = cartItem ? cartItem.quantity : "0";
-      return { ...dish, quantity };
+      const updatedQuantity = cartItem ? cartItem.quantity : "0";
+      return { ...dish, quantity:updatedQuantity, res_id:foodItems._id.toString(), res_name: foodItems.res_name};
       
     });
   return { ...foodItems, dishes: modifiedRestaurantList }
