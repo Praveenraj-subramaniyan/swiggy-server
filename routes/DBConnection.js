@@ -39,17 +39,23 @@ async function DetailsPage(id) {
 }
 
 async function InsertSignUpUser(nameSignup, emailIdSignup, passwordSignup) {
-  var connection = await client.connect();
+  try {
+    var connection = await client.connect();
   var db = connection.db(process.env.DB_name);
   await db.collection(process.env.UserRegistration_table).insertOne({
     email: emailIdSignup,
     password: passwordSignup,
     name: nameSignup,
-    cart: "",
-    order: "",
+    cart: [],
+    order: [],
   });
   await connection.close();
   return registerCredentials;
+    
+  } catch (error) {
+    return error
+  }
+  
 }
 
 async function AddCart(emailIdLogin, updatedCartData) {

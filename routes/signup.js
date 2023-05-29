@@ -9,13 +9,16 @@ router.post("/", async (req, res) => {
     if (registerCredentials == null) {
       try {
          await InsertSignUpUser(nameSignup,emailIdSignup,passwordSignup)
+         console.log("t")
          res.status(200).send("True");
       } catch (error) {
         console.log("mongo" + error);
+        console.log("e")
         res.status(200).send("Error");
       }
     } else {
       res.status(200).send("False");
+      console.log("f")
     }
   } catch (error) {
     console.log(error);
