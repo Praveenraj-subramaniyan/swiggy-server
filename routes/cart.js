@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-const { CheckUser,AddCart,HomePage} = require('./DBConnection');
+const { CheckUser,AddCart,HomePage,Addorders} = require('./DBConnection');
 const{ViewCart}= require('./modifyCartData');
 
 router.post("/", async (req, res) => {
@@ -41,4 +41,25 @@ router.post("/view", async (req, res) => {
     console.log(error);
   }
 });
+
+router.post("/checkoutcart", async (req, res) => {
+  try {
+    const { emailIdLogin, passwordLogin } =await req.body;
+    var loginCredentials = await CheckUser(emailIdLogin);
+    if (loginCredentials == null) {
+      res.status(200).send(null);
+    } else {
+      if (loginCredentials.password == passwordLogin) {
+        var restaurantList = await HomePage();
+        Addorders(emailIdLogin,ViewCart(restaurantList,loginCredentials));
+        res.json(true);
+      } else {
+        res.status(200).send(null);
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 module.exports = router;

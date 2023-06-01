@@ -41,27 +41,27 @@ async function DetailsPage(id) {
 async function InsertSignUpUser(nameSignup, emailIdSignup, passwordSignup) {
   try {
     var connection = await client.connect();
-  var db = connection.db(process.env.DB_name);
-  await db.collection(process.env.UserRegistration_table).insertOne({
-    email: emailIdSignup,
-    password: passwordSignup,
-    name: nameSignup,
-    cart: [],
-    order: [],
-  });
-  await connection.close();
-  return registerCredentials;
-    
+    var db = connection.db(process.env.DB_name);
+    await db.collection(process.env.UserRegistration_table).insertOne({
+      email: emailIdSignup,
+      password: passwordSignup,
+      name: nameSignup,
+      cart: [],
+      order: [],
+    });
+    await connection.close();
+    return registerCredentials;
   } catch (error) {
-    return error
+    return error;
   }
-  
 }
 
 async function AddCart(emailIdLogin, updatedCartData) {
   var connection = await client.connect();
   var db = connection.db(process.env.DB_name);
-  const existingUser = await db.collection(process.env.UserRegistration_table).findOne({ email: emailIdLogin });
+  const existingUser = await db
+    .collection(process.env.UserRegistration_table)
+    .findOne({ email: emailIdLogin });
   const existingCart = existingUser.cart || [];
   const { res_id, dish_id, quantity } = updatedCartData;
   let foundMatchingItem = false;
@@ -76,16 +76,49 @@ async function AddCart(emailIdLogin, updatedCartData) {
   }
   if (!foundMatchingItem) {
     existingCart.push({
-      res_id : res_id,
-      dish_id : dish_id,
-      quantity : quantity,
+      res_id: res_id,
+      dish_id: dish_id,
+      quantity: quantity,
     });
   }
-  await db.collection(process.env.UserRegistration_table).updateOne(
-    { email: emailIdLogin },
-    { $set: { cart: existingCart } }
-  );
+  await db
+    .collection(process.env.UserRegistration_table)
+    .updateOne({ email: emailIdLogin }, { $set: { cart: existingCart } });
   await connection.close();
 }
 
-module.exports = { CheckUser, HomePage, DetailsPage, InsertSignUpUser,AddCart };
+async function Addorders(emailIdLogin, orderList) {
+  var connection = await client.connect();
+  var db = connection.db(process.env.DB_name);
+  const existingUser = await db
+    .collection(process.env.UserRegistration_table)
+    .findOne({ email: emailIdLogin });
+  const existingCart = existingUser.order || [];
+  let orderListDetails = [];
+  orderList.map((data) => {
+    orderListDetails.push({
+        res_id: data.res_id.toString(),
+        dish_id: data.dish_id,
+        quantity: data.quantity,
+        price: data.price,
+    });
+  });
+  const orders = {
+    orderDate: new Date(),
+    OrderDetails: orderListDetails,
+  };
+  existingCart.push(orders);
+  await db
+    .collection(process.env.UserRegistration_table)
+    .updateOne({ email: emailIdLogin }, { $set: { order: existingCart, cart:[] } });
+  await connection.close();
+}
+
+module.exports = {
+  CheckUser,
+  HomePage,
+  DetailsPage,
+  InsertSignUpUser,
+  AddCart,
+  Addorders,
+};

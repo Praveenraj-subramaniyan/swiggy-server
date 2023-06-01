@@ -39,8 +39,8 @@ function CheckCartDetails(foodItems, loginCredentials) {
 function ViewCart(restaurantList, loginCredentials) {
   const cartItems = loginCredentials.cart;
   const modifiedDishes = [];
-  const restaurantList1 = CheckCart(restaurantList,loginCredentials)
-  restaurantList1.forEach((data) => {
+  const restaurantListCheck = CheckCart(restaurantList,loginCredentials)
+  restaurantListCheck.forEach((data) => {
     data.dishes.forEach((dish) => {
       if (dish.quantity > 0) {
         const modifiedDish = {
