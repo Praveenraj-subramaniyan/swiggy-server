@@ -38,7 +38,12 @@ async function DetailsPage(id) {
   return detailList;
 }
 
-async function InsertSignUpUser(nameSignup, emailIdSignup, passwordSignup) {
+async function InsertSignUpUser(
+  nameSignup,
+  emailIdSignup,
+  passwordSignup,
+  phoneSignup
+) {
   try {
     var connection = await client.connect();
     var db = connection.db(process.env.DB_name);
@@ -46,8 +51,10 @@ async function InsertSignUpUser(nameSignup, emailIdSignup, passwordSignup) {
       email: emailIdSignup,
       password: passwordSignup,
       name: nameSignup,
+      phone: phoneSignup,
       cart: [],
       order: [],
+      address: [],
     });
     await connection.close();
     return registerCredentials;
@@ -93,24 +100,40 @@ async function Addorders(emailIdLogin, orderList) {
   const existingUser = await db
     .collection(process.env.UserRegistration_table)
     .findOne({ email: emailIdLogin });
+  const currentDate = new Date();
+  const options = {
+    timeZone: "Asia/Kolkata",
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+  };
+  const currentTime = currentDate.toLocaleString("en-IN", options);
   const existingCart = existingUser.order || [];
   let orderListDetails = [];
   orderList.map((data) => {
     orderListDetails.push({
-        res_id: data.res_id.toString(),
-        dish_id: data.dish_id,
-        quantity: data.quantity,
-        price: data.price,
+      res_id: data.res_id.toString(),
+      dish_id: data.dish_id,
+      quantity: data.quantity,
+      price: data.price,
+      res_name: data.res_name,
+      dish_name: data.dish_name,
     });
   });
   const orders = {
-    orderDate: new Date(),
+    orderDate: currentTime,
     OrderDetails: orderListDetails,
   };
   existingCart.push(orders);
   await db
     .collection(process.env.UserRegistration_table)
-    .updateOne({ email: emailIdLogin }, { $set: { order: existingCart, cart:[] } });
+    .updateOne(
+      { email: emailIdLogin },
+      { $set: { order: existingCart, cart: [] } }
+    );
   await connection.close();
 }
 
