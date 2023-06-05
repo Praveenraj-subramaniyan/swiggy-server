@@ -137,6 +137,20 @@ async function Addorders(emailIdLogin, orderList) {
   await connection.close();
 }
 
+async function EditProfile(emailIdLogin, profile) {
+  var connection = await client.connect();
+  var db = connection.db(process.env.DB_name);
+  const existingUser = await db
+    .collection(process.env.UserRegistration_table)
+    .findOne({ email: emailIdLogin });
+
+  await db.collection(process.env.UserRegistration_table)
+    .updateOne(
+      { email: emailIdLogin },
+      { $set: { name: profile.name, phone: profile.phone } }
+    );
+  await connection.close();
+}
 module.exports = {
   CheckUser,
   HomePage,
@@ -144,4 +158,5 @@ module.exports = {
   InsertSignUpUser,
   AddCart,
   Addorders,
+  EditProfile,
 };
