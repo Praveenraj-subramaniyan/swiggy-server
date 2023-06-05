@@ -47,8 +47,6 @@ router.post("/orders", async (req, res) => {
 router.post("/edit", async (req, res) => {
   try {
     const { loginDataFromCookie, profile } = await req.body;
-    console.log(loginDataFromCookie)
-    console.log(profile)
     var loginCredentials = await CheckUser(loginDataFromCookie.emailIdLogin);
     if (loginCredentials == null) {
       res.status(200).send(null);
