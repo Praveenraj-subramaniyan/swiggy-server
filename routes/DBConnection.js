@@ -151,6 +151,35 @@ async function EditProfile(emailIdLogin, profile) {
     );
   await connection.close();
 }
+
+async function SaveAddress (emailIdLogin, address) {
+  var connection = await client.connect();
+  var db = connection.db(process.env.DB_name);
+  const existingUser = await db
+    .collection(process.env.UserRegistration_table)
+    .findOne({ email: emailIdLogin });
+    console.log(existingUser.address)
+    const existingAddress = existingUser.address || [];
+    const isPrimary = existingUser.address[0]? 0 :1;
+    console.log(existingUser.address)
+    existingAddress.push({
+      id:new ObjectId(),
+      flatno: address.flatno,
+      street: address.street,
+      area: address.area,
+      city: address.city,
+      state: address.state,
+      country: address.country,
+      pincode: address.pincode,
+      isPrimary:isPrimary,
+    });
+  await db.collection(process.env.UserRegistration_table)
+    .updateOne(
+      { email: emailIdLogin },
+      { $set: { address: existingAddress} }
+    );
+  await connection.close();
+}
 module.exports = {
   CheckUser,
   HomePage,
@@ -159,4 +188,5 @@ module.exports = {
   AddCart,
   Addorders,
   EditProfile,
+  SaveAddress,
 };

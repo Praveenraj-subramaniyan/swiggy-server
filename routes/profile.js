@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-const { CheckUser,EditProfile} = require("./DBConnection");
+const { CheckUser,EditProfile,SaveAddress} = require("./DBConnection");
 
 router.post("/", async (req, res) => {
   try {
@@ -53,6 +53,25 @@ router.post("/edit", async (req, res) => {
     } else {
       if (loginCredentials.password == loginDataFromCookie.passwordLogin) {
         await EditProfile(loginDataFromCookie.emailIdLogin,profile)
+        res.json(loginCredentials.order);
+      } else {
+        res.status(200).send(null);
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+router.post("/address/save", async (req, res) => {
+  try {
+    const { loginDataFromCookie, address } = await req.body;
+    var loginCredentials = await CheckUser(loginDataFromCookie.emailIdLogin);
+    if (loginCredentials == null) {
+      res.status(200).send(null);
+    } else {
+      if (loginCredentials.password == loginDataFromCookie.passwordLogin) {
+        await SaveAddress(loginDataFromCookie.emailIdLogin,address)
         res.json(loginCredentials.order);
       } else {
         res.status(200).send(null);
