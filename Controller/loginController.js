@@ -2,10 +2,10 @@ const UserRegistration = require("../Models/UserRegistration");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 dotenv.config();
-mongoose.connect(
-  `mongodb+srv://${process.env.MongoDb}@cluster0.dfyktwl.mongodb.net/${process.env.DB_name}?retryWrites=true&w=majority`,
-  { useNewUrlParser: true, useUnifiedTopology: true }
-);
+mongoose.connect(process.env.MongoDb_Url, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 async function CheckUser(emailIdLogin) {
   try {
