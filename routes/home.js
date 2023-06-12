@@ -1,44 +1,23 @@
 const express = require("express");
 var router = express.Router();
-const { CheckUser, HomePage,DetailsPage} = require('./DBConnection');
-const { CheckCart,CheckCartDetails} = require('./modifyCartData');
+const { AuthenticateUser } = require("../Controller/loginController");
+const { HomePage } = require("../Controller/homeController");
+const { CheckCart } = require("../Controller/cartController");
 
 router.post("/", async function (req, res) {
   try {
     const emailIdLogin = req.body.emailIdLogin;
     const passwordLogin = req.body.passwordLogin;
-    var loginCredentials = await CheckUser(emailIdLogin);
-    if (loginCredentials == null) {
-      res.status(200).send(null);
+    var loginCredentials = await AuthenticateUser(emailIdLogin, passwordLogin);
+    if (loginCredentials === false) {
+      res.status(400).send("login");
     } else {
-      if (loginCredentials.password == passwordLogin) {
-        var restaurantList = await HomePage();
-        res.json(CheckCart(restaurantList,loginCredentials));
-      } else {
-        res.status(200).send(null);
-      }
+      var restaurantList = await HomePage();
+      res.json(CheckCart(restaurantList, loginCredentials));
     }
   } catch (error) {
     console.log(error);
-  }
-});
-router.post("/:id", async function (req, res) {
-  try {
-    const emailIdLogin = req.body.emailIdLogin;
-    const passwordLogin = req.body.passwordLogin;
-    var loginCredentials = await CheckUser(emailIdLogin);
-    if (loginCredentials == null) {
-      res.status(200).send(null);
-    } else {
-      if (loginCredentials.password == passwordLogin) {
-        const foodItems = await DetailsPage(req.params.id)
-        res.json(CheckCartDetails(foodItems,loginCredentials));
-      } else {
-        res.status(200).send(null);
-      }
-    }
-  } catch (error) {
-    console.log(error);
+    res.status(500).send("login");
   }
 });
 

@@ -1,28 +1,34 @@
 const express = require("express");
 var router = express.Router();
-const {CheckUser,InsertSignUpUser} = require('./DBConnection');
+const bcrypt = require('bcrypt');
+const { CheckUser} = require('../Controller/loginController');
+const { InsertSignUpUser } = require("../Controller/signupController");
 
 router.post("/", async (req, res) => {
   try {
-    const { nameSignup, emailIdSignup,phoneSignup, passwordSignup, confirmpasswordSignup } =await req.body;
+    const {
+      nameSignup,
+      emailIdSignup,
+      phoneSignup,
+      passwordSignup,
+      confirmpasswordSignup,
+    } = await req.body;
     var registerCredentials = await CheckUser(emailIdSignup);
-    if (registerCredentials == null) {
-      try {
-         await InsertSignUpUser(nameSignup,emailIdSignup,passwordSignup,phoneSignup)
-         console.log("t")
-         res.status(200).send("True");
-      } catch (error) {
-        console.log("mongo" + error);
-        console.log("e")
-        res.status(200).send("Error");
-      }
-    } else {
-      res.status(200).send("False");
-      console.log("f")
+    if (registerCredentials === false) {
+      await InsertSignUpUser(
+        nameSignup,
+        emailIdSignup,
+        passwordSignup,
+        phoneSignup
+      );
+      res.status(200).send(true);
+    } else if(registerCredentials === true) {
+      res.status(200).send(false);
     }
   } catch (error) {
+    console.log("catch");
     console.log(error);
-    res.status(500).send(error);
+    res.status(400).send("error");
   }
 });
 

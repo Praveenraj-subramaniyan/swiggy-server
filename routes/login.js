@@ -1,23 +1,23 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-const { CheckUser} = require('./DBConnection');
+const { AuthenticateUser } = require("../Controller/loginController");
 
 router.post("/", async (req, res) => {
   try {
-    const { emailIdLogin, passwordLogin } =await req.body;
-    var loginCredentials = await CheckUser(emailIdLogin);
-    if (loginCredentials == null) {
+    const { emailIdLogin, passwordLogin } = await req.body;
+    var loginCredentials = await AuthenticateUser(emailIdLogin, passwordLogin);
+    if (loginCredentials === false) {
       res.status(200).send("Invalid");
     } else {
-      if (loginCredentials.password == passwordLogin) {
-        res.status(200).send("True");
-      } else {
-        res.status(200).send("False");
-      }
+      // if (loginCredentials.password == passwordLogin) {
+      res.status(200).send(true);
+      // } else {
+      //   res.status(200).send(false);
+      // }
     }
   } catch (error) {
     console.log(error);
-    res.status(500).send(error);
+    res.status(400).send(error);
   }
 });
 

@@ -1,64 +1,38 @@
 var express = require("express");
 var router = express.Router();
-const { CheckUser,AddCart,HomePage,Addorders} = require('./DBConnection');
-const{ViewCart}= require('./modifyCartData');
+const { AuthenticateUser } = require("../Controller/loginController");
+const { AddCart, ViewCart } = require("../Controller/cartController");
+const { HomePage } = require("../Controller/homeController");
 
 router.post("/", async (req, res) => {
   try {
-    const { loginDataFromCookie, updatedCartData } =await req.body;
-    var loginCredentials = await CheckUser(loginDataFromCookie.emailIdLogin);
-    if (loginCredentials == null) {
-      res.status(200).send(null);
+    const { loginDataFromCookie, updatedCartData } = await req.body;
+    var loginCredentials = await AuthenticateUser(loginDataFromCookie.emailIdLogin,loginDataFromCookie.passwordLogin);
+    if (loginCredentials === false) {
+      res.status(400).send("login");
     } else {
-      if (loginCredentials.password == loginDataFromCookie.passwordLogin) {
-        AddCart(loginDataFromCookie.emailIdLogin,updatedCartData);
-        res.status(200).send(null);
-      } else {
-        res.status(200).send(null);
-      }
+      AddCart(loginDataFromCookie.emailIdLogin, updatedCartData);
+      res.status(200).send(null);
     }
   } catch (error) {
     console.log(error);
-    res.status(500).send(error);
+    res.status(500).send("login");
   }
 });
 
 router.post("/view", async (req, res) => {
   try {
-    const { emailIdLogin, passwordLogin } =await req.body;
-    var loginCredentials = await CheckUser(emailIdLogin);
-    if (loginCredentials == null) {
-      res.status(200).send(null);
+    const { emailIdLogin, passwordLogin } = await req.body;
+    var loginCredentials = await AuthenticateUser(emailIdLogin, passwordLogin);
+    if (loginCredentials === false) {
+      res.status(400).send("login");
     } else {
-      if (loginCredentials.password == passwordLogin) {
         var restaurantList = await HomePage();
-        res.json(ViewCart(restaurantList,loginCredentials));
-      } else {
-        res.status(200).send(null);
-      }
+        res.json(ViewCart(restaurantList, loginCredentials));
     }
   } catch (error) {
     console.log(error);
-  }
-});
-
-router.post("/checkoutcart", async (req, res) => {
-  try {
-    const { emailIdLogin, passwordLogin } =await req.body;
-    var loginCredentials = await CheckUser(emailIdLogin);
-    if (loginCredentials == null) {
-      res.status(200).send(null);
-    } else {
-      if (loginCredentials.password == passwordLogin) {
-        var restaurantList = await HomePage();
-        Addorders(emailIdLogin,ViewCart(restaurantList,loginCredentials));
-        res.json(true);
-      } else {
-        res.status(200).send(null);
-      }
-    }
-  } catch (error) {
-    console.log(error);
+    res.status(500).send("login");
   }
 });
 

@@ -1,43 +1,22 @@
 var express = require("express");
 var router = express.Router();
-const { CheckUser,EditProfile,SaveAddress} = require("./DBConnection");
+const { AuthenticateUser } = require("../Controller/loginController");
+const { EditProfile, SaveAddress } = require("../Controller/profileController");
 
 router.post("/", async (req, res) => {
   try {
     const { emailIdLogin, passwordLogin } = await req.body;
-    var loginCredentials = await CheckUser(emailIdLogin);
-    if (loginCredentials == null) {
+    var loginCredentials = await AuthenticateUser(emailIdLogin, passwordLogin);
+    if (loginCredentials === false) {
       res.status(200).send(null);
     } else {
-      if (loginCredentials.password == passwordLogin) {
-        const payload={
-          email:loginCredentials.email,
-          name:loginCredentials.name,
-          phone:loginCredentials.phone,
-          address:loginCredentials.address,
-        }
-        res.json(payload);
-      } else {
-        res.status(200).send(null);
-      }
-    }
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-router.post("/orders", async (req, res) => {
-  try {
-    const { emailIdLogin, passwordLogin } = await req.body;
-    var loginCredentials = await CheckUser(emailIdLogin);
-    if (loginCredentials == null) {
-      res.status(200).send(null);
-    } else {
-      if (loginCredentials.password == passwordLogin) {
-        res.json(loginCredentials.order);
-      } else {
-        res.status(200).send(null);
-      }
+      const payload = {
+        email: loginCredentials.email,
+        name: loginCredentials.name,
+        phone: loginCredentials.phone,
+        address: loginCredentials.address,
+      };
+      res.json(payload);
     }
   } catch (error) {
     console.log(error);
@@ -47,38 +26,38 @@ router.post("/orders", async (req, res) => {
 router.post("/edit", async (req, res) => {
   try {
     const { loginDataFromCookie, profile } = await req.body;
-    var loginCredentials = await CheckUser(loginDataFromCookie.emailIdLogin);
-    if (loginCredentials == null) {
-      res.status(200).send(null);
+    var loginCredentials = await AuthenticateUser(
+      loginDataFromCookie.emailIdLogin,
+      loginDataFromCookie.passwordLogin
+    );
+    if (loginCredentials === false) {
+      res.status(400).send("login");
     } else {
-      if (loginCredentials.password == loginDataFromCookie.passwordLogin) {
-        await EditProfile(loginDataFromCookie.emailIdLogin,profile)
-        res.json(loginCredentials.order);
-      } else {
-        res.status(200).send(null);
-      }
+      await EditProfile(loginDataFromCookie.emailIdLogin, profile);
+      res.json(loginCredentials.order);
     }
   } catch (error) {
     console.log(error);
+    res.status(500).send("login");
   }
 });
 
 router.post("/address/save", async (req, res) => {
   try {
     const { loginDataFromCookie, address } = await req.body;
-    var loginCredentials = await CheckUser(loginDataFromCookie.emailIdLogin);
-    if (loginCredentials == null) {
-      res.status(200).send(null);
+    var loginCredentials = await AuthenticateUser(
+      loginDataFromCookie.emailIdLogin,
+      loginDataFromCookie.passwordLogin
+    );
+    if (loginCredentials === false) {
+      res.status(400).send("login");
     } else {
-      if (loginCredentials.password == loginDataFromCookie.passwordLogin) {
-        await SaveAddress(loginDataFromCookie.emailIdLogin,address)
+        await SaveAddress(loginDataFromCookie.emailIdLogin, address);
         res.json(loginCredentials.order);
-      } else {
-        res.status(200).send(null);
-      }
     }
   } catch (error) {
     console.log(error);
+    res.status(500).send("login");
   }
 });
 
