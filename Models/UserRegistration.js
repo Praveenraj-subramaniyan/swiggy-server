@@ -52,6 +52,10 @@ const userSchema = new mongoose.Schema(
         isPrimary: Boolean,
       },
     ],
+    forgetPassword: {
+      time: Date,
+      otp: String,
+    },
   },
   { collection: "UserRegistration" }
 );

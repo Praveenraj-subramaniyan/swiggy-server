@@ -15,6 +15,7 @@ async function InsertSignUpUser(
     cart: [],
     order: [],
     address: [],
+    forgetPassword: {},
   });
   await newUser.save();
 }

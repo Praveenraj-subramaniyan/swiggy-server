@@ -13,6 +13,7 @@ var detailsRouter = require('./routes/details');
 var cartRouter = require('./routes/cart');
 var ordersRouter = require('./routes/orders');
 var profileRouter = require('./routes/profile');
+var forgetpasswordRouter = require('./routes/forgetpassword');
 var app = express();
 
 // view engine setup
@@ -33,6 +34,7 @@ app.use('/details', detailsRouter);
 app.use('/cart', cartRouter);
 app.use('/orders', ordersRouter);
 app.use('/profile', profileRouter);
+app.use('/forgetpassword', forgetpasswordRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
