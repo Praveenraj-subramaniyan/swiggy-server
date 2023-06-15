@@ -29,7 +29,7 @@ async function InsertSignUpUser(token) {
   <p>our account has been successfully registered in swiggy clone</p>
   <p>Click below link to login into your account.</p>
   <a href="https://master--praveenswiggycloneapp.netlify.app/">https://master--praveenswiggycloneapp.netlify.app//</a>`;
-      sendMail(emailIdSignup, "Registration Successful", content);
+      sendMail(newUser.email, "Registration Successful", content);
       return `
       <html>
         <head>
