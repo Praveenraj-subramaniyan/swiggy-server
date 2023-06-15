@@ -1,5 +1,6 @@
 const UserRegistration = require("../Models/UserRegistration");
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 const dotenv = require("dotenv");
 dotenv.config();
 mongoose.connect(process.env.MongoDb_Url, {
@@ -22,11 +23,13 @@ async function CheckUser(emailIdLogin) {
 async function AuthenticateUser(emailIdLogin, passwordLogin) {
   try {
     const userCheck = await UserRegistration.findOne({ email: emailIdLogin });
-    if (userCheck.password === passwordLogin) {
+    const validPassword = await bcrypt.compare(passwordLogin, userCheck.password );
+    if (validPassword) {
       return userCheck;
     }
     return false;
   } catch (error) {
+    console.log(error);
     return false;
   }
 }

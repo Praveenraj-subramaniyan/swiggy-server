@@ -5,9 +5,9 @@ const { HomePage } = require("../Controller/homeController");
 const { CheckCart } = require("../Controller/cartController");
 
 router.post("/", async function (req, res) {
+  const emailIdLogin = req.body.emailIdLogin;
+  const passwordLogin = req.body.passwordLogin;
   try {
-    const emailIdLogin = req.body.emailIdLogin;
-    const passwordLogin = req.body.passwordLogin;
     var loginCredentials = await AuthenticateUser(emailIdLogin, passwordLogin);
     if (loginCredentials === false) {
       res.status(400).send("login");

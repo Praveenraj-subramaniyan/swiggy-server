@@ -7,13 +7,9 @@ router.post("/", async (req, res) => {
     const { emailIdLogin, passwordLogin } = await req.body;
     var loginCredentials = await AuthenticateUser(emailIdLogin, passwordLogin);
     if (loginCredentials === false) {
-      res.status(200).send("Invalid");
+      res.status(200).send(false);
     } else {
-      // if (loginCredentials.password == passwordLogin) {
       res.status(200).send(true);
-      // } else {
-      //   res.status(200).send(false);
-      // }
     }
   } catch (error) {
     console.log(error);
