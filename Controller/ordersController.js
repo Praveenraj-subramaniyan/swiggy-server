@@ -1,7 +1,7 @@
 const UserRegistration = require("../Models/UserRegistration");
 const mongoose = require("mongoose");
 
-async function Addorders(emailIdLogin, orderList) {
+async function Addorders(email, orderList) {
   try {
     const currentDate = new Date();
     const options = {
@@ -34,9 +34,8 @@ async function Addorders(emailIdLogin, orderList) {
       orderDate: currentTime,
       OrderDetails: orderListDetails,
     };
-    console.log(orders);
     await UserRegistration.findOneAndUpdate(
-      { email: emailIdLogin },
+      { email: email },
       { $set: { cart: [] }, $push: { order: orders } }
     );
   } catch (error) {

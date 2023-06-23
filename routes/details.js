@@ -1,14 +1,13 @@
 const express = require("express");
 var router = express.Router();
-const { AuthenticateUser } = require("../Controller/loginController");
+const { AuthorizeUser } = require("../Controller/loginController");
 const { DetailsPage } = require("../Controller/detailsController");
 const { CheckCartDetails } = require("../Controller/cartController");
 
-router.post("/:id", async function (req, res) {
+router.get("/:id", async function (req, res) {
   try {
-    const emailIdLogin = req.body.emailIdLogin;
-    const passwordLogin = req.body.passwordLogin;
-    var loginCredentials = await AuthenticateUser(emailIdLogin, passwordLogin);
+    const auth_token = req.headers.authorization.split(" ")[1];
+    var loginCredentials = await AuthorizeUser(auth_token);
     if (loginCredentials === false) {
       res.status(400).send("login");
     } else {

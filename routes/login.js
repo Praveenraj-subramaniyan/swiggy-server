@@ -9,11 +9,11 @@ router.post("/", async (req, res) => {
     if (loginCredentials === false) {
       res.status(200).send(false);
     } else {
-      res.status(200).send(true);
+      res.status(200).send(loginCredentials);
     }
   } catch (error) {
     console.log(error);
-    res.status(400).send(error);
+    res.status(400).send("Server Busy");
   }
 });
 

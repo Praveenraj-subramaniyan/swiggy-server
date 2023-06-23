@@ -82,14 +82,15 @@ async function InsertVerifyUser(
     phone: phoneSignup,
     token: token,
   });
-  console.log();
   const activationLink = `https://swiggy-server-6c69.onrender.com/signup/${token}`;
-  console.log(activationLink);
   const content = `
   <h4>Hi there,</h4>
   <h5>Welcome to Swiggy Clone</h5>
   <p>Thank you for signing up. Please click the link below to activate your account:</p>
-  <a href="${activationLink}">${activationLink}</a>`;
+  <a href="${activationLink}">${activationLink}</a>
+  <p>Regards,</p>
+  <p>Swiggy</p>
+  `;
 
   await newUser.save();
   sendMail(emailIdSignup, "Verify User", content);

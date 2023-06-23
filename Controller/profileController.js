@@ -1,10 +1,10 @@
 const UserRegistration = require("../Models/UserRegistration");
 const mongoose = require("mongoose");
 
-async function EditProfile(emailIdLogin, profile) {
+async function EditProfile(email, profile) {
   try {
     const existingUser = await UserRegistration.findOne({
-      email: emailIdLogin,
+      email: email,
     });
     existingUser.name = profile.name;
     existingUser.phone = profile.phone;

@@ -1,19 +1,19 @@
 var express = require("express");
 var router = express.Router();
-const { AuthenticateUser } = require("../Controller/loginController");
+const { AuthorizeUser } = require("../Controller/loginController");
 const { HomePage } = require("../Controller/homeController");
 const { Addorders } = require("../Controller/ordersController");
 const { ViewCart } = require("../Controller/cartController");
 
-router.post("/checkout", async (req, res) => {
+router.get("/checkout", async (req, res) => {
   try {
-    const { emailIdLogin, passwordLogin } = await req.body;
-    var loginCredentials = await AuthenticateUser(emailIdLogin, passwordLogin);
+    const auth_token = req.headers.authorization.split(' ')[1];
+    var loginCredentials = await AuthorizeUser(auth_token);
     if (loginCredentials === false) {
       res.status(400).send("login");
     } else {
       var restaurantList = await HomePage();
-      await Addorders(emailIdLogin, ViewCart(restaurantList, loginCredentials));
+      await Addorders(loginCredentials.email, ViewCart(restaurantList, loginCredentials));
       res.json(true);
     }
   } catch (error) {
@@ -22,10 +22,10 @@ router.post("/checkout", async (req, res) => {
   }
 });
 
-router.post("/view", async (req, res) => {
+router.get("/view", async (req, res) => {
   try {
-    const { emailIdLogin, passwordLogin } = await req.body;
-    var loginCredentials = await AuthenticateUser(emailIdLogin, passwordLogin);
+    const auth_token = req.headers.authorization.split(' ')[1];
+    var loginCredentials = await AuthorizeUser(auth_token);
     if (loginCredentials === false) {
       res.status(400).send("login");
     } else {

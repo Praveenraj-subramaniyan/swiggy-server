@@ -6,11 +6,13 @@ async function ForgetPassword(email) {
   try {
     const user = await UserRegistration.findOne({ email });
     if (user) {
-      const currentForgetPassword = user.forgetPassword;
+      user.forgetPassword = {};
       const otp = generateOTP();
+      const salt = await bcrypt.genSalt(10);
+      const hashedOTP = await bcrypt.hash(otp, salt);
       user.forgetPassword = {
         time: new Date(),
-        otp: otp,
+        otp: hashedOTP,
       };
       await user.save();
       const content = `
@@ -35,7 +37,8 @@ async function NewPassword(email, otp, newPassword) {
   try {
     const user = await UserRegistration.findOne({ email });
     if (user) {
-      if (user.forgetPassword.otp === otp) {
+      const validOTP = await bcrypt.compare(otp, user.forgetPassword.otp  );
+      if (validOTP) {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(newPassword, salt);
         user.forgetPassword = {};

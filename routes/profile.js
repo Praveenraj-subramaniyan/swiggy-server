@@ -1,12 +1,12 @@
 var express = require("express");
 var router = express.Router();
-const { AuthenticateUser } = require("../Controller/loginController");
+const { AuthorizeUser } = require("../Controller/loginController");
 const { EditProfile, SaveAddress } = require("../Controller/profileController");
 
-router.post("/", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const { emailIdLogin, passwordLogin } = await req.body;
-    var loginCredentials = await AuthenticateUser(emailIdLogin, passwordLogin);
+    const auth_token = req.headers.authorization.split(' ')[1];
+    var loginCredentials = await AuthorizeUser(auth_token);
     if (loginCredentials === false) {
       res.status(200).send(null);
     } else {
@@ -25,15 +25,13 @@ router.post("/", async (req, res) => {
 
 router.post("/edit", async (req, res) => {
   try {
-    const { loginDataFromCookie, profile } = await req.body;
-    var loginCredentials = await AuthenticateUser(
-      loginDataFromCookie.emailIdLogin,
-      loginDataFromCookie.passwordLogin
-    );
+    const { profile } = await req.body;
+    const auth_token = req.headers.authorization.split(' ')[1];
+    var loginCredentials = await AuthorizeUser(auth_token);
     if (loginCredentials === false) {
       res.status(400).send("login");
     } else {
-      await EditProfile(loginDataFromCookie.emailIdLogin, profile);
+      await EditProfile(loginCredentials.email, profile);
       res.json(loginCredentials.order);
     }
   } catch (error) {
@@ -44,15 +42,13 @@ router.post("/edit", async (req, res) => {
 
 router.post("/address/save", async (req, res) => {
   try {
-    const { loginDataFromCookie, address } = await req.body;
-    var loginCredentials = await AuthenticateUser(
-      loginDataFromCookie.emailIdLogin,
-      loginDataFromCookie.passwordLogin
-    );
+    const auth_token = req.headers.authorization.split(' ')[1];
+    const { address } = await req.body;
+    var loginCredentials = await AuthorizeUser(auth_token);
     if (loginCredentials === false) {
       res.status(400).send("login");
     } else {
-        await SaveAddress(loginDataFromCookie.emailIdLogin, address);
+        await SaveAddress(loginCredentials.email, address);
         res.json(loginCredentials.order);
     }
   } catch (error) {

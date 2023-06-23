@@ -74,7 +74,7 @@ function CheckCartDetails(foodItems, loginCredentials) {
   const modifiedRestaurantList = foodItems.dishes.map((dish) => {
     const cartItem = cartItems.find(
       (item) =>
-        item.dish_id === dish.dish_id &&
+        item.dish_id === dish.dish_id.toString() &&
         item.res_id === foodItems._id.toString()
     );
     const updatedQuantity = cartItem ? cartItem.quantity : "0";
