@@ -11,7 +11,7 @@ router.post("/", async (req, res) => {
     console.log()
     var loginCredentials = await AuthorizeUser(auth_token);
     if (loginCredentials === false) {
-      res.status(400).send("login");
+      res.status(200).send("login");
     } else {
       AddCart(loginCredentials.email, updatedCartData);
       res.status(200).send(null);
@@ -28,7 +28,7 @@ router.get("/view", async (req, res) => {
   try {
     
     if (loginCredentials === false) {
-      res.status(400).send("login");
+      res.status(200).send("login");
     } else {
         var restaurantList = await HomePage();
         res.json(ViewCart(restaurantList, loginCredentials));

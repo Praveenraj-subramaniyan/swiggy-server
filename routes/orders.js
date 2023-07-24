@@ -10,7 +10,7 @@ router.get("/checkout", async (req, res) => {
     const auth_token = req.headers.authorization.split(' ')[1];
     var loginCredentials = await AuthorizeUser(auth_token);
     if (loginCredentials === false) {
-      res.status(400).send("login");
+      res.status(200).send("login");
     } else {
       var restaurantList = await HomePage();
       await Addorders(loginCredentials.email, ViewCart(restaurantList, loginCredentials));

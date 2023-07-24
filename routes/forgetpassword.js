@@ -8,13 +8,13 @@ router.post("/", async (req, res) => {
     const { email } = await req.body;
     var checkCredentials = await CheckUser(email);
     if (checkCredentials === false) {
-      res.status(400).send(false);
+      res.status(500).send(false);
     } else if (checkCredentials === true) {
       const response = await ForgetPassword(email);
       if (response === true) {
         res.status(200).send(response);
       } else if (response === "Server busy") {
-        res.status(400).send(response);
+        res.status(200).send(response);
       }
     }
   } catch (error) {
@@ -29,18 +29,18 @@ router.post("/new", async (req, res) => {
     if (newPassword === confirmPassword) {
       var checkCredentials = await CheckUser(email);
       if (checkCredentials === false) {
-        res.status(400).send(false);
+        res.status(200).send(false);
       } else if (checkCredentials === true) {
         const response = await NewPassword(email,otp,newPassword);
         if (response === true) {
           res.status(200).send(response);
         } else if (response === "Server busy") {
-          res.status(400).send(response);
+          res.status(200).send(response);
         }
       }
     }
     else{
-      res.status(400).send(false);
+      res.status(200).send(false);
     }
   } catch (error) {
     console.log(error);

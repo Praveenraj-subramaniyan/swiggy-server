@@ -99,7 +99,7 @@ router.post("/address/set/primary", async (req, res) => {
     const { id } = await req.body;
     var loginCredentials = await AuthorizeUser(auth_token);
     if (loginCredentials === false) {
-      res.status(400).send("login");
+      res.status(200).send("login");
     } else {
       res.json(await SetPrimaryAddress(loginCredentials.email, id));
     }
