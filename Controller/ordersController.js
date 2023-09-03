@@ -45,12 +45,16 @@ async function Addorders(email,token, orderList) {
       { email: email },
       { $set: { cart: [] }, $push: { order: orders } }
     );
-    // try {
+    try {
       const paymentIntent = await stripe.paymentIntents.create({
         amount: orderTotalPrice,
         currency: 'inr',
         automatic_payment_methods: { enabled: true },
       });
+    }
+    catch(err){
+      console.log(err)
+    }
     
       const emailContent = `
         <html>
@@ -67,30 +71,7 @@ async function Addorders(email,token, orderList) {
           </body>
         </html>
       `;
-    
-      sendMail(token.email, "Payment success", emailContent);
-    // } 
-    // catch (error) {
-    //   console.log(error)
-    //   const emailContent = `
-    //     <html>
-    //       <head>
-    //         <title>Payment Failed</title>
-    //       </head>
-    //       <body>
-    //         <h1>Payment Failed</h1>
-    //         <p>Payment Amount: ₹${orderTotalPrice}</p>
-    //         <p>Date and Time: ${currentTime}</p>
-    //         <p>We regret to inform you that your payment has failed.</p>
-    //         <p>Please check your payment details and try again.</p>
-    //         <p>Regards</p>
-    //         <p>Swiggy Clone</p>
-    //       </body>
-    //     </html>
-    //   `;
-    //   sendMail(token.email, "Payment failed", emailContent);
-    // }
-   
+      sendMail(token.email, "Payment success", emailContent); 
   } catch (error) {
     console.error(error);
   }
