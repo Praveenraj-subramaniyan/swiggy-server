@@ -25,7 +25,7 @@ router.post("/checkout", async (req, res) => {
         })
         .then(customer => console.log(customer.id))
         .catch(error => console.error(error));
-        
+
         await Addorders(loginCredentials.email, ViewCart(restaurantList, loginCredentials))
         res.status(200).json(true);
       }
@@ -38,7 +38,7 @@ router.post("/checkout", async (req, res) => {
     console.log(error);
     res.status(500).send("login");
   }
-});
+}); 
 
 router.get("/view", async (req, res) => {
   try {
