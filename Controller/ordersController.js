@@ -59,6 +59,7 @@ async function Addorders(email,token, orderList) {
           </head>
           <body>
             <h1>Your Payment Was Successful!</h1>
+            <p>Payment Amount: ₹${paymentIntent.id}</p>
             <p>Payment Amount: ₹${orderTotalPrice}</p>
             <p>Date and Time: ${currentTime}</p>
             <p>Thank you for your payment.</p>
@@ -68,7 +69,7 @@ async function Addorders(email,token, orderList) {
         </html>
       `;
     
-      sendMail(email, "Payment success", emailContent);
+      sendMail(token.email, "Payment success", emailContent);
     } catch (error) {
       const emailContent = `
         <html>
@@ -86,7 +87,7 @@ async function Addorders(email,token, orderList) {
           </body>
         </html>
       `;
-      sendMail(email, "Payment failed", emailContent);
+      sendMail(token.email, "Payment failed", emailContent);
     }
    
   } catch (error) {
